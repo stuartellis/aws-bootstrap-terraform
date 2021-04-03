@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  Create AWS resources for a Terraform backend
+Parameters:
+  Prefix:
+    Type: String
+    Description: The prefix for AWS resource names
+  ProjectName:
+    Type: String
+    Description: The name of the project
+  Environment:
+    Type: String
+    Description: The name of the environment
+  TfManagedPolicyName:
+    Type: String
+    Default: AdministratorAccess
+    Description: The name of the IAM policy to apply
+
+Resources:
+  TfExecutionGroup:
+    Type: AWS::IAM::Group
+    Properties: 
+      GroupName: !Sub ${Prefix}-${ProjectName}-tfusers-${Environment}
+      ManagedPolicyArns: 
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/${TfManagedPolicyName}"
+ 
+  TfExecutionUser0001:
+    Type: AWS::IAM::User
+    Properties: 
+      Groups: 
+        - !Ref TfExecutionGroup
+      UserName: !Sub ${Prefix}.${ProjectName}.tfuser.${Environment}
+
+Outputs:
+  TfExecutionGroup:
+    Value: !Ref TfExecutionGroup
+  TfExecutionUser0001:
+    Value: !Ref TfExecutionUser0001
