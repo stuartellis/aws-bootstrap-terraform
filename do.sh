@@ -31,16 +31,16 @@ case $1 in
     [ -d "log" ] || mkdir log
     [ -d ".venv" ] || python3 -m venv .venv
   ;;
-  create)
+  backend:create)
     aws cloudformation create-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-$AWS_ENV" --template-body file://"$PWD"/cloudformation/cfn-tf-backend.yaml --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" --tags Key=ManagedBy,Value=CLI
   ;;
-  destroy)
+  backend:destroy)
     aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-$AWS_ENV"
   ;;
-  update)
+  backend:update)
     aws cloudformation update-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-$AWS_ENV" --template-body file://"$PWD"/cloudformation/cfn-tf-backend.yaml --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" --tags Key=ManagedBy,Value=CLI
   ;;
-  validate)
+  backend:validate)
     aws cloudformation validate-template --template-body file://"$PWD"/cloudformation/cfn-tf-backend.yaml > /dev/null
   ;;
   *)
