@@ -2,11 +2,12 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: |
   Create AWS resources for a Terraform backend
 Parameters:
-  ProjectPrefix:
+  Prefix:
     Type: String
     Description: The prefix for AWS resource names
-  AppName:
+  ProjectName:
     Type: String
+    Description: The name of the project
   Environment:
     Type: String
     Description: The name of the environment
@@ -18,7 +19,7 @@ Resources:
     Properties:
       VersioningConfiguration:
         Status: Enabled
-      BucketName: !Sub ${AppName}-tfstate-${Environment}
+      BucketName: !Sub ${Prefix}-${ProjectName}-tfstate-${Environment}
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
         BlockPublicPolicy: True
@@ -28,7 +29,7 @@ Resources:
   TfBackendDynamoDbTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ${AppName}-tfstate-lock-${Environment}
+      TableName: !Sub ${Prefix}-${ProjectName}-tfstate-lock-${Environment}
       BillingMode: PROVISIONED
       ProvisionedThroughput:
         ReadCapacityUnits: 1
