@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  Create AWS resources for a Terraform backend
+Parameters:
+  ProjectPrefix:
+    Type: String
+    Description: The prefix for AWS resource names
+  AppName:
+    Type: String
+  Environment:
+    Type: String
+    Description: The name of the environment
+
+Resources:
+  TfBackendBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      BucketName: !Sub ${AppName}-tfstate-${Environment}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  TfBackendDynamoDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AppName}-tfstate-lock-${Environment}
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+
+Outputs:
+  TfBackendBucket:
+    Value: !Ref TfBackendBucket
+  TfBackendDynamoDbTable:
+    Value: !Ref TfBackendDynamoDbTable
