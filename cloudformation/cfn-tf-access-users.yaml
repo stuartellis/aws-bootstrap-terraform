@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  AWS resources for Terraform access
+Parameters:
+  Prefix:
+    Type: String
+    Description: The prefix for AWS resource names
+  ProjectName:
+    Type: String
+    Description: The name of the project
+  Environment:
+    Type: String
+    Description: The name of the environment
+  ManagedAccountID:
+    Type: Number
+    Description: Number of the AWS account that is being managed
+  TfExecRoleName:
+    Type: String
+    Description: The name of the role in the managed AWS account
+  TfS3BackendArn:
+    Type: String
+    Description: The ARN of the S3 bucket that stores the Terraform state
+  TfDDBBackendArn:
+    Type: String
+    Description: The ARN of the DynamoDB table that provides locking for Terraform state
+
+Resources:
+
+  TfAccessGroup:
+    Type: AWS::IAM::Group
+    Properties: 
+      GroupName: !Sub ${Prefix}-${ProjectName}-tf-users-${Environment}
+
+  TfManagedAccountExecPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub ${Prefix}-${ProjectName}-tf-exec-${Environment}
+      Groups: 
+       - !Ref TfAccessGroup
+      Tags:
+        - Key: sje:Purpose
+          Value: terraform-access
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          Effect: Allow
+          Action: 
+            - sts:AssumeRole
+          Resource: 
+            - !Sub "arn:aws:iam::${ManagedAccountID}:role/${TfExecRoleName}"
+ 
+  TfBackendAccessPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub ${Prefix}-${ProjectName}-tf-backend-${Environment}
+      Groups: 
+       - !Ref TfAccessGroup
+      Tags:
+        - Key: sje:Purpose
+          Value: terraform-access
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - s3:PutObject
+              - s3:GetObject
+              - s3:ListBucket
+            Resource:
+              - !Ref TfS3BackendArn
+          - Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+            Resource:
+              - !Ref TfDDBBackendArn
+
+  TfAccessUser0001:
+    Type: AWS::IAM::User
+    Properties: 
+      Groups: 
+        - !Ref TfAccessGroup
+      UserName: !Sub ${Prefix}.${ProjectName}.tfuser.${Environment}
+      Tags:
+        - Key: sje:Purpose
+          Value: terraform-access
+
+Outputs:
+  TfAccessGroup:
+    Value: !Ref TfAccessGroup
+  TfAccessUser0001:
+    Value: !Ref TfAccessUser0001

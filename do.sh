@@ -84,13 +84,13 @@ case $1 in
     aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-tf-access-$AWS_OPS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_ACCESS_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_OPS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_OPS_ENV" ParameterKey=ManagingAccountID,ParameterValue="$AWS_OPS_ACCOUNT" --tags Key=ManagedBy,Value=CLI
   ;;
   tf:exec:create)
-    aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-tf-exec-$AWS_MANAGED_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_EXEC_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_MANAGED_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_MANAGED_ENV" --tags Key=ManagedBy,Value=CLI
+    aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-tf-exec-$AWS_MANAGED_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_EXEC_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_MANAGED_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_MANAGED_ENV" ParameterKey=ManagingAccountID,ParameterValue="$AWS_OPS_ACCOUNT" --tags Key=ManagedBy,Value=CLI
   ;;
   tf:exec:delete)
     aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-tf-exec-$AWS_MANAGED_ENV"
   ;;
   tf:exec:update)
-    aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-tf-exec-$AWS_MANAGED_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_EXEC_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_MANAGED_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_MANAGED_ENV" --tags Key=ManagedBy,Value=CLI
+    aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-tf-exec-$AWS_MANAGED_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_EXEC_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_MANAGED_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_MANAGED_ENV" ParameterKey=ManagingAccountID,ParameterValue="$AWS_OPS_ACCOUNT" --tags Key=ManagedBy,Value=CLI
   ;;
   validate)
     CFN_TEMPLATES=$(ls "$PWD"/cloudformation/*.yaml)

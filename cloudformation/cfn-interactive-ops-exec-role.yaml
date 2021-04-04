@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: |
-  AWS resources for interactive Ops access
+  AWS resources for interactive Ops
 Parameters:
   Prefix:
     Type: String

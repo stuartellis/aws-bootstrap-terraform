@@ -11,46 +11,45 @@ Parameters:
   Environment:
     Type: String
     Description: The name of the environment
-  KmsKeyArn:
-    Type: String
-    Description: The ARN of the KMS key that encrypts the bucket
 
 Resources:
   TfBackendBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
     Properties:
       BucketName: !Sub ${Prefix}-${ProjectName}-tfstate-${Environment}-${AWS::Region}
       VersioningConfiguration:
         Status: Enabled
-      BucketEncryption:
-      ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: 'aws:kms'
-            KMSMasterKeyID: !Ref KmsKeyArn
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
         BlockPublicPolicy: True
         IgnorePublicAcls: True
         RestrictPublicBuckets: True
+      Tags:
+        - Key: sje:Purpose
+          Value: terraform-backend
 
   TfBackendDynamoDbTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub ${Prefix}-${ProjectName}-tfstate-lock-${Environment}-${AWS::Region}
-      BillingMode: PROVISIONED
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
+      BillingMode: PAY_PER_REQUEST
       KeySchema:
         - AttributeName: LockID
           KeyType: HASH
       AttributeDefinitions:
         - AttributeName: LockID
           AttributeType: S
+      Tags:
+        - Key: sje:Purpose
+          Value: terraform-backend
 
 Outputs:
   TfBackendBucket:
     Value: !Ref TfBackendBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-s3-state-${AWS::Region}"
   TfBackendDynamoDbTable:
     Value: !Ref TfBackendDynamoDbTable
+    Export:
+      Name: !Sub "${AWS::StackName}-ddb-lock-${AWS::Region}"
+ 

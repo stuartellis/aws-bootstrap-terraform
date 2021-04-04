@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: |
-  AWS resources for executing administration 
+  AWS resources for executing Terraform execution 
 Parameters:
   Prefix:
     Type: String
@@ -27,7 +27,7 @@ Resources:
       Description: !Sub ${Prefix} ${ProjectName} Terraform runner for ${Environment}
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - 
             Effect: "Allow"
             Principal: 
@@ -36,7 +36,7 @@ Resources:
               - "sts:AssumeRole"
       Tags:
         - Key: sje:Purpose
-          Value: terraform-access
+          Value: terraform-execution
       ManagedPolicyArns: 
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/${ManagedPolicyName}"
 

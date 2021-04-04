@@ -10,8 +10,8 @@ Use the *do.sh* script to setup and run this tooling.
 
 This script uses two AWS accounts:
 
-- The operations account - The account that hosts IAM users and Terraform backends
-- The managed account - An account that is being managed by the operations account
+- The operations account - The account that hosts IAM users and Terraform backends. Terraform refers to this as the *administrative account*.
+- The managed account - An account that is being managed by the operations account. Terraform refers to this as the *environment account*.
 
 To check the CloudFormation templates, first set your AWS profile to the operations account and region. Then run this command:
 
