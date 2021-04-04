@@ -5,12 +5,17 @@ set -euo pipefail
 AWS_CLI=aws
 PYTHON_EXE=python3
 
-export TIMESTAMP=$(date +%Y-%m-%dT%H:%M%z)
 export AWS_PREFIX=stuartellis
 export AWS_PROJECT=longhouse
 export AWS_ENV=dev
+
+export AWS_OPS_ACCOUNT=119559809358
+export AWS_MANAGED_ACCOUNT=333594256635
+
+export AWS_OPS_ACCESS_CFN=cfn-interactive-ops-role.yaml
 export AWS_TF_BACKEND_CFN=cfn-tf-backend.yaml
 export AWS_TF_USERS_CFN=cfn-tf-users.yaml
+export AWS_TF_EXEC_CFN=cfn-tf-exec-role.yaml
 
 if [ ! "${1:-}" ]; then 
   echo "Specify a subcommand."
@@ -33,17 +38,32 @@ case $1 in
     [ -d "log" ] || mkdir log
     [ -d ".venv" ] || python3 -m venv .venv
   ;;
-  backend:create)
+  ops:role:create)
+    aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_PROJECT-ops-access-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_OPS_ACCESS_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" ParameterKey=ManagingAccountID,ParameterValue="$AWS_OPS_ACCOUNT" --tags Key=ManagedBy,Value=CLI
+  ;;
+  ops:role:delete)
+    aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-ops-access-$AWS_ENV"
+  ;;
+  ops:role:update)
+    aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_PROJECT-ops-access-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_OPS_ACCESS_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" ParameterKey=ManagingAccountID,ParameterValue="$AWS_OPS_ACCOUNT" --tags Key=ManagedBy,Value=CLI
+  ;;
+  tf:backend:create)
     aws cloudformation create-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-tfstate-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_BACKEND_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" --tags Key=ManagedBy,Value=CLI
   ;;
-  backend:delete)
+  tf:backend:delete)
     aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-tfstate-$AWS_ENV"
   ;;
-  backend:update)
+  tf:backend:update)
     aws cloudformation update-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-tfstate-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_BACKEND_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" --tags Key=ManagedBy,Value=CLI
   ;;
-  backend:validate)
-    aws cloudformation validate-template --template-body file://"$PWD"/cloudformation/$AWS_TF_BACKEND_CFN > /dev/null
+  tf:role:create)
+    aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_PROJECT-tf-exec-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_EXEC_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" ParameterKey=ManagingAccountID,ParameterValue="$AWS_OPS_ACCOUNT" --tags Key=ManagedBy,Value=CLI
+  ;;
+  tf:role:delete)
+    aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_PROJECT-tf-exec-$AWS_ENV"
+  ;;
+  tf:role:update)
+    aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_PROJECT-tf-exec-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_EXEC_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" ParameterKey=ManagingAccountID,ParameterValue="$AWS_OPS_ACCOUNT" --tags Key=ManagedBy,Value=CLI
   ;;
   users:create)
     aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_PROJECT-tfusers-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_USERS_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" --tags Key=ManagedBy,Value=CLI
@@ -54,8 +74,11 @@ case $1 in
   users:update)
     aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_PROJECT-tfusers-$AWS_ENV" --template-body file://"$PWD"/cloudformation/$AWS_TF_USERS_CFN --parameters ParameterKey=Prefix,ParameterValue="$AWS_PREFIX" ParameterKey=ProjectName,ParameterValue="$AWS_PROJECT" ParameterKey=Environment,ParameterValue="$AWS_ENV" --tags Key=ManagedBy,Value=CLI
   ;;
-  users:validate)
-    aws cloudformation validate-template --template-body file://"$PWD"/cloudformation/$AWS_TF_USERS_CFN > /dev/null
+  validate)
+    CFN_TEMPLATES=$(ls "$PWD"/cloudformation/*.yaml)
+    for CFN_TEMPLATE in $CFN_TEMPLATES; do
+      aws cloudformation validate-template --template-body file://"$CFN_TEMPLATE" > /dev/null
+    done
   ;;
   *)
     echo "$1 is not a valid command"

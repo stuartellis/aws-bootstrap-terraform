@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  AWS resources for interactive Ops access
+Parameters:
+  Prefix:
+    Type: String
+    Description: The prefix for AWS resource names
+  ProjectName:
+    Type: String
+    Description: The name of the project
+  Environment:
+    Type: String
+    Description: The name of the environment
+  ManagedPolicyName:
+    Type: String
+    Default: AdministratorAccess
+    Description: The name of the IAM policy to apply
+  ManagingAccountID:
+    Type: Number
+    Description: AWS account number that uses this role
+
+Resources:
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${Prefix}-${ProjectName}-interactive-ops-${Environment}
+      Description: !Sub ${Prefix} ${ProjectName} interactive Ops access for ${Environment}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              AWS: !Sub "arn:${AWS::Partition}:iam::${ManagingAccountID}:root"
+            Action: 
+              - "sts:AssumeRole"
+            Condition:
+              Bool:
+                aws:MultiFactorAuthPresent: True
+      ManagedPolicyArns: 
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/${ManagedPolicyName}"
+      Tags:
+          - Key: sje:Purpose
+            Value: interactive-access
+Outputs:
+  ExecutionRole:
+    Value: !Ref ExecutionRole
