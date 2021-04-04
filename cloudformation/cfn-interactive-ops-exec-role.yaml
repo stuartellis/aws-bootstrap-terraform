@@ -10,17 +10,17 @@ Parameters:
     Description: The name of the project
   Environment:
     Type: String
-    Description: The name of the environment
+    Description: The name of the managed environment
   ManagedPolicyName:
     Type: String
     Default: AdministratorAccess
-    Description: The name of the IAM policy to apply
+    Description: The name of the IAM policy to attach
   ManagingAccountID:
     Type: Number
     Description: AWS account number that uses this role
 
 Resources:
-  ExecutionRole:
+  IactiveExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub ${Prefix}-${ProjectName}-interactive-ops-${Environment}
@@ -43,5 +43,5 @@ Resources:
           - Key: sje:Purpose
             Value: interactive-access
 Outputs:
-  ExecutionRole:
-    Value: !Ref ExecutionRole
+  IactiveExecutionRole:
+    Value: !Ref IactiveExecutionRole

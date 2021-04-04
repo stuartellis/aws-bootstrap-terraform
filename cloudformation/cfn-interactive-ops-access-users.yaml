@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  Create AWS resources for interactive Ops access
+Parameters:
+  UserName:
+    Type: String
+    Description: Unique name for the user account
+  UserEmail:
+    Type: String
+    Description: Unique email address for the user account
+  Prefix:
+    Type: String
+    Description: The prefix for AWS resource names
+  ProjectName:
+    Type: String
+    Description: The name of the project
+  Environment:
+    Type: String
+    Description: The name of the environment
+  IactiveOpsAccountManagedPolicyName:
+    Type: String
+    Default: AdministratorAccess
+    Description: The name of the IAM policy to apply
+
+Resources:
+  IactiveAccessGroup:
+    Type: AWS::IAM::Group
+    Properties: 
+      GroupName: !Sub ${Prefix}-${ProjectName}-iactive-ops-${Environment}
+      ManagedPolicyArns: 
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/${IactiveOpsAccountManagedPolicyName}"
+ 
+  IactiveAccessUser0001:
+    Type: AWS::IAM::User
+    Properties: 
+      Groups: 
+        - !Ref IactiveAccessGroup
+      UserName: !Sub ${UserName}
+      Tags:
+        - Key: sje:Email
+          Value: !Sub ${UserEmail}
+        - Key: sje:Purpose
+          Value: interactive-access
+
+Outputs:
+  IactiveAccessGroup:
+    Value: !Ref IactiveAccessGroup
+  IactiveAccessUser0001:
+    Value: !Ref IactiveAccessUser0001

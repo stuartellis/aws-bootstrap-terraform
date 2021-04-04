@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: |
-  Create AWS resources for a Terraform backend
+  AWS resources for a Terraform backend
 Parameters:
   Prefix:
     Type: String
@@ -11,15 +11,23 @@ Parameters:
   Environment:
     Type: String
     Description: The name of the environment
+  KmsKeyArn:
+    Type: String
+    Description: The ARN of the KMS key that encrypts the bucket
 
 Resources:
   TfBackendBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
+      BucketName: !Sub ${Prefix}-${ProjectName}-tfstate-${Environment}-${AWS::Region}
       VersioningConfiguration:
         Status: Enabled
-      BucketName: !Sub ${Prefix}-${ProjectName}-tfstate-${Environment}
+      BucketEncryption:
+      ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: 'aws:kms'
+            KMSMasterKeyID: !Ref KmsKeyArn
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
         BlockPublicPolicy: True
@@ -29,7 +37,7 @@ Resources:
   TfBackendDynamoDbTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ${Prefix}-${ProjectName}-tfstate-lock-${Environment}
+      TableName: !Sub ${Prefix}-${ProjectName}-tfstate-lock-${Environment}-${AWS::Region}
       BillingMode: PROVISIONED
       ProvisionedThroughput:
         ReadCapacityUnits: 1

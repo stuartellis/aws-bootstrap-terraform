@@ -8,12 +8,29 @@ Use the *do.sh* script to setup and run this tooling.
 
     ./do.sh info
 
-To create a Terraform backend, first set your AWS profile to the target account and region. Then run this command:
+This script uses two AWS accounts:
 
-    ./do.sh backend:create
+- The operations account - The account that hosts IAM users and Terraform backends
+- The managed account - An account that is being managed by the operations account
 
-To create an IAM user for Terraform, first set your AWS profile to the target account and region. Then run this command:
+To check the CloudFormation templates, first set your AWS profile to the operations account and region. Then run this command:
 
-    ./do.sh users:create
+    ./do.sh validate
 
-> Other valid subcommands for *backend* and *users* are: *update*, *delete* and *validate* template.
+To create a Terraform backend, first set your AWS profile to the operations account and region. Then run this command:
+
+    ./do.sh tf:backend:create
+
+To create an IAM user for Terraform, first set your AWS profile to the operations account and region. Then run this command:
+
+    ./do.sh ops:access:create
+
+Subcommands:
+
+- *ops:access* - Manage IAM users for human operators in the operations account
+- *ops:exec* - Manage IAM role in the managed account
+- *tf:backend* - Manage Terraform backend in the operations account
+- *tf:access* - Manage IAM users for Terraform in the operations account
+- *tf:exec* - Manage IAM role for Terraform in the managed account
+
+> The valid options are: *create*, *update* and *delete*.
