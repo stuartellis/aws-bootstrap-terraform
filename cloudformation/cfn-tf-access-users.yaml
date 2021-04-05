@@ -54,12 +54,21 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - s3:PutObject
-              - s3:GetObject
               - s3:ListBucket
             Resource:
               - !ImportValue 
                 'Fn::Sub': ${TfS3BackendImport}
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetObject
+              - s3:ListBucket
+            Resource:
+              - 'Fn::Join': 
+                - '/'
+                - - !ImportValue
+                    'Fn::Sub': ${TfS3BackendImport}
+                  - '*'
           - Effect: Allow
             Action:
               - dynamodb:GetItem
