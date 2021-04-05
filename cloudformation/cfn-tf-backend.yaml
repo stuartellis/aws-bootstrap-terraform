@@ -45,11 +45,11 @@ Resources:
 
 Outputs:
   TfBackendBucket:
-    Value: !Ref TfBackendBucket
+    Value: !GetAtt TfBackendBucket.Arn
     Export:
       Name: !Sub "${AWS::StackName}-s3-state-${AWS::Region}"
   TfBackendDynamoDbTable:
-    Value: !Ref TfBackendDynamoDbTable
+    Value: !GetAtt TfBackendDynamoDbTable.Arn
     Export:
       Name: !Sub "${AWS::StackName}-ddb-lock-${AWS::Region}"
  

@@ -14,15 +14,12 @@ Parameters:
   ManagedAccountID:
     Type: Number
     Description: Number of the AWS account that is being managed
-  TfExecRoleName:
+  TfS3BackendImport:
     Type: String
-    Description: The name of the role in the managed AWS account
-  TfS3BackendArn:
+    Description: Name of exported value that provides the ARN of the S3 bucket for the Terraform state
+  TfDdbBackendImport:
     Type: String
-    Description: The ARN of the S3 bucket that stores the Terraform state
-  TfDDBBackendArn:
-    Type: String
-    Description: The ARN of the DynamoDB table that provides locking for Terraform state
+    Description: Name of exported value that provides the ARN of the DynamoDB table for Terraform locking
 
 Resources:
 
@@ -37,9 +34,6 @@ Resources:
       PolicyName: !Sub ${Prefix}-${ProjectName}-tf-exec-${Environment}
       Groups: 
        - !Ref TfAccessGroup
-      Tags:
-        - Key: sje:Purpose
-          Value: terraform-access
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -47,7 +41,7 @@ Resources:
           Action: 
             - sts:AssumeRole
           Resource: 
-            - !Sub "arn:aws:iam::${ManagedAccountID}:role/${TfExecRoleName}"
+            - !Sub "arn:aws:iam::${ManagedAccountID}:role/${Prefix}-${ProjectName}-tf-exec-${Environment}"
  
   TfBackendAccessPolicy:
     Type: AWS::IAM::Policy
@@ -55,24 +49,25 @@ Resources:
       PolicyName: !Sub ${Prefix}-${ProjectName}-tf-backend-${Environment}
       Groups: 
        - !Ref TfAccessGroup
-      Tags:
-        - Key: sje:Purpose
-          Value: terraform-access
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Action:
+          - Effect: Allow
+            Action:
               - s3:PutObject
               - s3:GetObject
               - s3:ListBucket
             Resource:
-              - !Ref TfS3BackendArn
-          - Action:
+              - !ImportValue 
+                'Fn::Sub': ${TfS3BackendImport}
+          - Effect: Allow
+            Action:
               - dynamodb:GetItem
               - dynamodb:PutItem
               - dynamodb:DeleteItem
             Resource:
-              - !Ref TfDDBBackendArn
+              - !ImportValue 
+                'Fn::Sub': ${TfDdbBackendImport}
 
   TfAccessUser0001:
     Type: AWS::IAM::User
