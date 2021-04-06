@@ -26,7 +26,7 @@ Resources:
   IactiveAccessGroup:
     Type: AWS::IAM::Group
     Properties: 
-      GroupName: !Sub ${Prefix}-${ProjectName}-iactive-ops-${Environment}
+      GroupName: !Sub ${Prefix}-${ProjectName}-${Environment}-iactive-ops
       ManagedPolicyArns: 
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/${IactiveOpsAccountManagedPolicyName}"
  
@@ -37,9 +37,9 @@ Resources:
         - !Ref IactiveAccessGroup
       UserName: !Sub ${UserName}
       Tags:
-        - Key: sje:Email
+        - Key: sje:email
           Value: !Sub ${UserEmail}
-        - Key: sje:Purpose
+        - Key: sje:purpose
           Value: interactive-access
 
 Outputs:

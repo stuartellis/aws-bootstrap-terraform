@@ -35,7 +35,7 @@ Resources:
                 'Fn::Sub': ${KmsKeyImport}
             BucketKeyEnabled: true
       Tags:
-        - Key: sje:Purpose
+        - Key: sje:purpose
           Value: terraform-backend
 
   TfBackendDynamoDbTable:
@@ -50,7 +50,7 @@ Resources:
         - AttributeName: LockID
           AttributeType: S
       Tags:
-        - Key: sje:Purpose
+        - Key: sje:purpose
           Value: terraform-backend
 
 Outputs:

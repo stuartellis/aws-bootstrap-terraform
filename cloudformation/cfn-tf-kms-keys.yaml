@@ -33,7 +33,7 @@ Resources:
       KeySpec: SYMMETRIC_DEFAULT
       PendingWindowInDays: 7 # Default is 30 days
       Tags:
-        - Key: sje:RelatedService
+        - Key: sje:related-service
           Value: !Sub ${ServiceName}
 
   KmsKey0001Alias:

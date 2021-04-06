@@ -23,7 +23,7 @@ Resources:
   IactiveExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${Prefix}-${ProjectName}-interactive-ops-${Environment}
+      RoleName: !Sub ${Prefix}-${ProjectName}-${Environment}-interactive-ops
       Description: !Sub ${Prefix} ${ProjectName} interactive Ops access for ${Environment}
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -40,7 +40,7 @@ Resources:
       ManagedPolicyArns: 
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/${ManagedPolicyName}"
       Tags:
-          - Key: sje:Purpose
+          - Key: sje:purpose
             Value: interactive-access
 Outputs:
   IactiveExecutionRole:

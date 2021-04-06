@@ -24,7 +24,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub ${Prefix}-${ProjectName}-${Environment}-tf-exec
-      Description: !Sub ${Prefix} ${ProjectName} Terraform runner for ${Environment}
+      Description: !Sub ${Prefix} ${ProjectName} Terraform execution for ${Environment}
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -35,7 +35,7 @@ Resources:
             Action: 
               - "sts:AssumeRole"
       Tags:
-        - Key: sje:Purpose
+        - Key: sje:purpose
           Value: terraform-execution
       ManagedPolicyArns: 
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/${ManagedPolicyName}"
