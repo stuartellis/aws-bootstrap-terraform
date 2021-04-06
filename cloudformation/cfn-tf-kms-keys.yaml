@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  User-managed KMS key
+Parameters:
+  Prefix:
+    Type: String
+    Description: The prefix for AWS resource names
+  ProjectName:
+    Type: String
+    Description: The name of the project
+  ServiceName:
+    Type: String
+    Description: The name of the service that the key is used for
+  Environment:
+    Type: String
+    Description: The name of the environment
+
+Resources:
+  KmsKey0001:
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: !Sub ${Prefix} ${ProjectName} key for ${ServiceName} on ${Environment}
+      Enabled: True
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Action: kms:*
+          Resource: "*" # Resource must be specified as * in key policies
+          Principal:
+            AWS:  !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root" 
+      EnableKeyRotation: true         
+      KeySpec: SYMMETRIC_DEFAULT
+      PendingWindowInDays: 7 # Default is 30 days
+      Tags:
+        - Key: sje:RelatedService
+          Value: !Sub ${ServiceName}
+
+  KmsKey0001Alias:
+    Type: AWS::KMS::Alias
+    Properties: 
+      AliasName: !Sub "alias/${Prefix}/${ProjectName}/${Environment}/${ServiceName}/tfstate" # Aliases must begin with alias/
+      TargetKeyId: !Ref KmsKey0001
+
+Outputs:
+  KmsKey0001AliasName:
+    Value: !Ref KmsKey0001Alias
+    Export:
+      Name: !Sub "${AWS::StackName}-kms-key-alias"
+  KmsKey0001Arn:
+    Value: !GetAtt KmsKey0001.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-kms-key-arn"

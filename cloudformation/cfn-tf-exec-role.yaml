@@ -23,7 +23,7 @@ Resources:
   ExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${Prefix}-${ProjectName}-tf-exec-${Environment}
+      RoleName: !Sub ${Prefix}-${ProjectName}-${Environment}-tf-exec
       Description: !Sub ${Prefix} ${ProjectName} Terraform runner for ${Environment}
       AssumeRolePolicyDocument:
         Version: "2012-10-17"

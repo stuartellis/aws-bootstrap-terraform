@@ -11,12 +11,15 @@ Parameters:
   Environment:
     Type: String
     Description: The name of the environment
+  KmsKeyImport:
+    Type: String
+    Description: Name of exported value that provides the ARN of the encryption key
 
 Resources:
   TfBackendBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${Prefix}-${ProjectName}-tfstate-${Environment}-${AWS::Region}
+      BucketName: !Sub ${Prefix}-${ProjectName}-${Environment}-tfstate-${AWS::Region}
       VersioningConfiguration:
         Status: Enabled
       PublicAccessBlockConfiguration:
@@ -24,6 +27,13 @@ Resources:
         BlockPublicPolicy: True
         IgnorePublicAcls: True
         RestrictPublicBuckets: True
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'aws:kms'
+              KMSMasterKeyID: !ImportValue 
+                'Fn::Sub': ${KmsKeyImport}
+            BucketKeyEnabled: true
       Tags:
         - Key: sje:Purpose
           Value: terraform-backend
@@ -31,7 +41,7 @@ Resources:
   TfBackendDynamoDbTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ${Prefix}-${ProjectName}-tfstate-lock-${Environment}-${AWS::Region}
+      TableName: !Sub ${Prefix}-${ProjectName}-${Environment}-tfstate-lock-${AWS::Region}
       BillingMode: PAY_PER_REQUEST
       KeySchema:
         - AttributeName: LockID
@@ -47,9 +57,9 @@ Outputs:
   TfBackendBucket:
     Value: !GetAtt TfBackendBucket.Arn
     Export:
-      Name: !Sub "${AWS::StackName}-s3-state-${AWS::Region}"
+      Name: !Sub "${AWS::StackName}-s3-state-arn"
   TfBackendDynamoDbTable:
     Value: !GetAtt TfBackendDynamoDbTable.Arn
     Export:
-      Name: !Sub "${AWS::StackName}-ddb-lock-${AWS::Region}"
+      Name: !Sub "${AWS::StackName}-ddb-lock-arn"
  

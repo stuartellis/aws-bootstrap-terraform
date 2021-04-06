@@ -11,9 +11,12 @@ Parameters:
   Environment:
     Type: String
     Description: The name of the environment
-  ManagedAccountID:
-    Type: Number
-    Description: Number of the AWS account that is being managed
+  TfExecRoleArn:
+    Type: String
+    Description: The ARN of the role in the account that is being managed
+  TfKmsKeyBackendImport:
+    Type: String
+    Description: Name of exported value that provides the ARN of the KMS key for the Terraform state
   TfS3BackendImport:
     Type: String
     Description: Name of exported value that provides the ARN of the S3 bucket for the Terraform state
@@ -26,12 +29,12 @@ Resources:
   TfAccessGroup:
     Type: AWS::IAM::Group
     Properties: 
-      GroupName: !Sub ${Prefix}-${ProjectName}-tf-users-${Environment}
+      GroupName: !Sub ${Prefix}-${ProjectName}-${Environment}-tf-users
 
   TfManagedAccountExecPolicy:
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: !Sub ${Prefix}-${ProjectName}-tf-exec-${Environment}
+      PolicyName: !Sub ${Prefix}-${ProjectName}-${Environment}-tf-exec
       Groups: 
        - !Ref TfAccessGroup
       PolicyDocument:
@@ -41,17 +44,24 @@ Resources:
           Action: 
             - sts:AssumeRole
           Resource: 
-            - !Sub "arn:aws:iam::${ManagedAccountID}:role/${Prefix}-${ProjectName}-tf-exec-${Environment}"
+            - !Ref TfExecRoleArn
  
   TfBackendAccessPolicy:
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: !Sub ${Prefix}-${ProjectName}-tf-backend-${Environment}
+      PolicyName: !Sub ${Prefix}-${ProjectName}-${Environment}-tf-backend
       Groups: 
        - !Ref TfAccessGroup
       PolicyDocument:
         Version: 2012-10-17
         Statement:
+          - Effect: Allow
+            Action:
+              - "kms:Decrypt",
+                "kms:GenerateDataKey"
+            Resource:
+              - !ImportValue 
+                'Fn::Sub': ${TfKmsKeyBackendImport}
           - Effect: Allow
             Action:
               - s3:ListBucket
@@ -83,7 +93,7 @@ Resources:
     Properties: 
       Groups: 
         - !Ref TfAccessGroup
-      UserName: !Sub ${Prefix}.${ProjectName}.tfuser.${Environment}
+      UserName: !Sub ${Prefix}.${ProjectName}.${Environment}.tfuser
       Tags:
         - Key: sje:Purpose
           Value: terraform-access
