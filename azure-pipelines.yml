@@ -11,6 +11,11 @@ stages:
   - stage: run
     displayName: Run
     jobs:
+    - job: run
+      displayName: Run
+      pool:
+        vmImage: ${{variables.vmImage}}
+      steps:
       - task: AWSShellScript@1
         displayName: 'Ops: Deploy Interactive Access'
         inputs:
