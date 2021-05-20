@@ -21,19 +21,19 @@ To check the CloudFormation templates, first set your AWS profile to the operati
 
 To create an IAM user for interactive access, first set your AWS profile to the operations account and region. Run this command:
 
-    ./do.sh ops:access:create
+    ./do.sh ops:access:deploy
 
 ## Terraform Setup
 
 Set your AWS profile to the managed account and region. Run these commands:
 
-    ./do.sh tf:exec:create
+    ./do.sh tf:exec:deploy
 
 Set your AWS profile to the operations account and region. Run these commands:
 
-    ./do.sh tf:kms:create
-    ./do.sh tf:backend:create
-    ./do.sh tf:access:create
+    ./do.sh tf:kms:deploy
+    ./do.sh tf:backend:deploy
+    ./do.sh tf:access:deploy
 
 ## Subcommands
 
@@ -44,4 +44,4 @@ Set your AWS profile to the operations account and region. Run these commands:
 - *tf:exec* - Manage IAM role for Terraform in the managed account
 - *tf:kms* - Manages KMS for the S3 Terraform backend in the operations account
 
-> The valid options are: *create*, *update* and *delete*.
+> The valid options are: *deploy* and *delete*.
