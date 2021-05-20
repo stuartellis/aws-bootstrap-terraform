@@ -63,7 +63,7 @@ case $1 in
     aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-access"
   ;;
   tf:backend:deploy)
-    aws cloudformation deploy --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-backend" --template-file "$PWD"/cloudformation/$AWS_TF_BACKEND_CFN --parameter-overrides Prefix=$AWS_PREFIX ProjectName=$AWS_MANAGED_PROJECT Environment=$AWS_MANAGED_ENV TfKmsKeyBackendImport=$AWS_TF_KMS_BACKEND_EXPORT --tags sje:managed-by=CLI
+    aws cloudformation deploy --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-backend" --template-file "$PWD"/cloudformation/$AWS_TF_BACKEND_CFN --parameter-overrides Prefix=$AWS_PREFIX ProjectName=$AWS_MANAGED_PROJECT Environment=$AWS_MANAGED_ENV KmsKeyImport=$AWS_TF_KMS_BACKEND_EXPORT --tags sje:managed-by=CLI
   ;;
   tf:backend:delete)
     aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-backend"
