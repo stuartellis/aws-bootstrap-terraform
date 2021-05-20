@@ -19,35 +19,35 @@ stages:
       - task: AWSShellScript@1
         displayName: 'Ops: Deploy Interactive Access'
         inputs:
-          awsCredentials: ${{ parameters.opsAccountServiceConnection }}
-          regionName: ${{ parameters.awsRegion }}
+          awsCredentials: ${{ variables.opsAccountServiceConnection }}
+          regionName: ${{ variables.awsRegion }}
           scriptType: 'inline'
           inlineScript: ./do.sh ops:access:deploy
       - task: AWSShellScript@1
         displayName: 'Target: Deploy Terraform Access'
         inputs:
-          awsCredentials: ${{ parameters.targetAccountServiceConnection }}
-          regionName: ${{ parameters.awsRegion }}
+          awsCredentials: ${{ variables.targetAccountServiceConnection }}
+          regionName: ${{ variables.awsRegion }}
           scriptType: 'inline'
           inlineScript: ./do.sh tf:exec:deploy
       - task: AWSShellScript@1
         displayName: 'Ops: Deploy KMS Keys'
         inputs:
-          awsCredentials: ${{ parameters.opsAccountServiceConnection }}
-          regionName: ${{ parameters.awsRegion }}
+          awsCredentials: ${{ variables.opsAccountServiceConnection }}
+          regionName: ${{ variables.awsRegion }}
           scriptType: 'inline'
           inlineScript: ./do.sh tf:kms:deploy
       - task: AWSShellScript@1
         displayName: 'Ops: Deploy Terraform Backend'
         inputs:
-          awsCredentials: ${{ parameters.opsAccountServiceConnection }}
-          regionName: ${{ parameters.awsRegion }}
+          awsCredentials: ${{ variables.opsAccountServiceConnection }}
+          regionName: ${{ variables.awsRegion }}
           scriptType: 'inline'
           inlineScript: ./do.sh tf:backend:deploy
       - task: AWSShellScript@1
         displayName: 'Ops: Deploy Terraform Access'
         inputs:
-          awsCredentials: ${{ parameters.opsAccountServiceConnection }}
-          regionName: ${{ parameters.awsRegion }}
+          awsCredentials: ${{ variables.opsAccountServiceConnection }}
+          regionName: ${{ variables.awsRegion }}
           scriptType: 'inline'
           inlineScript: ./do.sh tf:access:deploy
