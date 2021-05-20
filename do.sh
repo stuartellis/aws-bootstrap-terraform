@@ -57,7 +57,7 @@ case $1 in
     aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-iactive-ops-exec"
   ;;
   tf:access:deploy)
-    aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-access" --template-file "$PWD"/cloudformation/$AWS_TF_ACCESS_CFN --parameters-overrides Prefix=$AWS_PREFIX ProjectName=$AWS_MANAGED_PROJECT Environment=$AWS_MANAGED_ENV TfExecRoleArn=$AWS_TF_EXEC_ROLE_ARN TfKmsKeyBackendImport=$AWS_TF_KMS_BACKEND_EXPORT TfS3BackendImport=$AWS_TF_S3_BACKEND_EXPORT TfDdbBackendImport=$AWS_TF_DDB_BACKEND_EXPORT --tags sje:managed-by=CLI
+    aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-access" --template-file "$PWD"/cloudformation/$AWS_TF_ACCESS_CFN --parameter-overrides Prefix=$AWS_PREFIX ProjectName=$AWS_MANAGED_PROJECT Environment=$AWS_MANAGED_ENV TfExecRoleArn=$AWS_TF_EXEC_ROLE_ARN TfKmsKeyBackendImport=$AWS_TF_KMS_BACKEND_EXPORT TfS3BackendImport=$AWS_TF_S3_BACKEND_EXPORT TfDdbBackendImport=$AWS_TF_DDB_BACKEND_EXPORT --tags sje:managed-by=CLI
   ;;
   tf:access:delete)
     aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-access"
