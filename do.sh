@@ -21,8 +21,8 @@ export AWS_MANAGED_ACCOUNT=333594256635
 
 AWS_CLI=aws
 
-export AWS_OPS_ACCESS_CFN=cfn-interactive-ops-access-users.yaml
-export AWS_OPS_EXEC_CFN=cfn-interactive-ops-exec-role.yaml
+export AWS_OPS_ACCESS_CFN=cfn-manual-ops-access-users.yaml
+export AWS_OPS_EXEC_CFN=cfn-manual-ops-exec-role.yaml
 
 export AWS_TF_BACKEND_CFN=cfn-tf-backend.yaml
 export AWS_TF_KMS_BACKEND_EXPORT="$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-statekey-kms-key-arn"
