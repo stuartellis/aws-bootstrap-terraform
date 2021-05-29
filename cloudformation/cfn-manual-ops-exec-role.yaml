@@ -20,7 +20,7 @@ Parameters:
     Description: AWS account number that uses this role
 
 Resources:
-  IactiveExecutionRole:
+  ManualExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub ${Prefix}-${ProjectName}-${Environment}-interactive-ops
@@ -43,5 +43,5 @@ Resources:
           - Key: sje:purpose
             Value: interactive-access
 Outputs:
-  IactiveExecutionRole:
-    Value: !Ref IactiveExecutionRole
+  ManualExecutionRole:
+    Value: !Ref ManualExecutionRole

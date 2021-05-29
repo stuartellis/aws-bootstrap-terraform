@@ -17,24 +17,24 @@ Parameters:
   Environment:
     Type: String
     Description: The name of the environment
-  IactiveOpsAccountManagedPolicyName:
+  ManualOpsAccountManagedPolicyName:
     Type: String
     Default: AdministratorAccess
     Description: The name of the IAM policy to apply
 
 Resources:
-  IactiveAccessGroup:
+  ManualAccessGroup:
     Type: AWS::IAM::Group
     Properties: 
-      GroupName: !Sub ${Prefix}-${ProjectName}-${Environment}-iactive-ops
+      GroupName: !Sub ${Prefix}-${ProjectName}-${Environment}-manual-ops
       ManagedPolicyArns: 
-        - !Sub "arn:${AWS::Partition}:iam::aws:policy/${IactiveOpsAccountManagedPolicyName}"
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/${ManualOpsAccountManagedPolicyName}"
  
-  IactiveAccessUser0001:
+  ManualAccessUser0001:
     Type: AWS::IAM::User
     Properties: 
       Groups: 
-        - !Ref IactiveAccessGroup
+        - !Ref ManualAccessGroup
       UserName: !Sub ${UserName}
       Tags:
         - Key: sje:email
@@ -43,7 +43,7 @@ Resources:
           Value: interactive-access
 
 Outputs:
-  IactiveAccessGroup:
-    Value: !Ref IactiveAccessGroup
-  IactiveAccessUser0001:
-    Value: !Ref IactiveAccessUser0001
+  ManualAccessGroup:
+    Value: !Ref ManualAccessGroup
+  ManualAccessUser0001:
+    Value: !Ref ManualAccessUser0001

@@ -17,7 +17,7 @@ stages:
         vmImage: ${{variables.vmImage}}
       steps:
       - task: AWSShellScript@1
-        displayName: 'Ops: Deploy Interactive Access'
+        displayName: 'Ops: Deploy Manual Access'
         inputs:
           awsCredentials: ${{ variables.opsAccountServiceConnection }}
           regionName: ${{ variables.awsRegion }}

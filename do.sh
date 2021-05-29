@@ -45,16 +45,16 @@ case $1 in
     $AWS_CLI --version
   ;;
   ops:access:deploy)
-    aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_OPS_PROJECT-$AWS_OPS_ENV-iactive-ops-access" --template-file "$PWD"/cloudformation/$AWS_OPS_ACCESS_CFN --parameter-overrides UserEmail=$AWS_OPS_USER_EMAIL UserName=$AWS_OPS_USER_NAME Prefix=$AWS_PREFIX ProjectName=$AWS_OPS_PROJECT Environment=$AWS_OPS_ENV --tags sje:managed-by=CLI
+    aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_OPS_PROJECT-$AWS_OPS_ENV-manual-ops-access" --template-file "$PWD"/cloudformation/$AWS_OPS_ACCESS_CFN --parameter-overrides UserEmail=$AWS_OPS_USER_EMAIL UserName=$AWS_OPS_USER_NAME Prefix=$AWS_PREFIX ProjectName=$AWS_OPS_PROJECT Environment=$AWS_OPS_ENV --tags sje:managed-by=CLI
   ;;
   ops:access:delete)
-    aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_OPS_PROJECT-$AWS_OPS_ENV-iactive-ops-access"
+    aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_OPS_PROJECT-$AWS_OPS_ENV-manual-ops-access"
   ;;
   ops:exec:deploy)
-    aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-iactive-ops-exec" --template-file "$PWD"/cloudformation/$AWS_OPS_EXEC_CFN --parameter-overrides Prefix=$AWS_PREFIX ProjectName=$AWS_MANAGED_PROJECT Environment=$AWS_MANAGED_ENV ManagingAccountID=$AWS_OPS_ACCOUNT --tags sje:managed-by=CLI
+    aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-manual-ops-exec" --template-file "$PWD"/cloudformation/$AWS_OPS_EXEC_CFN --parameter-overrides Prefix=$AWS_PREFIX ProjectName=$AWS_MANAGED_PROJECT Environment=$AWS_MANAGED_ENV ManagingAccountID=$AWS_OPS_ACCOUNT --tags sje:managed-by=CLI
   ;;
   ops:exec:delete)
-    aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-iactive-ops-exec"
+    aws cloudformation delete-stack --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-manual-ops-exec"
   ;;
   tf:access:deploy)
     aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM --stack-name "$AWS_PREFIX-$AWS_MANAGED_PROJECT-$AWS_MANAGED_ENV-tf-access" --template-file "$PWD"/cloudformation/$AWS_TF_ACCESS_CFN --parameter-overrides Prefix=$AWS_PREFIX ProjectName=$AWS_MANAGED_PROJECT Environment=$AWS_MANAGED_ENV TfExecRoleArn=$AWS_TF_EXEC_ROLE_ARN TfKmsKeyBackendImport=$AWS_TF_KMS_BACKEND_EXPORT TfS3BackendImport=$AWS_TF_S3_BACKEND_EXPORT TfDdbBackendImport=$AWS_TF_DDB_BACKEND_EXPORT --tags sje:managed-by=CLI
