@@ -41,6 +41,8 @@ Resources:
           Value: !Sub ${UserEmail}
         - Key: sje:purpose
           Value: interactive-access
+        - Key: sje:phase
+          Value: maintained
 
 Outputs:
   ManualAccessGroup:

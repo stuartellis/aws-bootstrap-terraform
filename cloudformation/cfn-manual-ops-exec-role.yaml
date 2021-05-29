@@ -42,6 +42,8 @@ Resources:
       Tags:
           - Key: sje:purpose
             Value: interactive-access
+          - Key: sje:phase
+            Value: maintained
 Outputs:
   ManualExecutionRole:
     Value: !Ref ManualExecutionRole

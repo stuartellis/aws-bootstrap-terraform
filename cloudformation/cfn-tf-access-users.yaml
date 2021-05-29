@@ -97,6 +97,8 @@ Resources:
       Tags:
         - Key: sje:purpose
           Value: terraform-access
+        - Key: sje:phase
+          Value: maintained
 
 Outputs:
   TfAccessGroup:

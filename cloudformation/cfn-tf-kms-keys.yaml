@@ -35,6 +35,8 @@ Resources:
       Tags:
         - Key: sje:related-service
           Value: !Sub ${ServiceName}
+        - Key: sje:phase
+          Value: maintained
 
   KmsKey0001Alias:
     Type: AWS::KMS::Alias

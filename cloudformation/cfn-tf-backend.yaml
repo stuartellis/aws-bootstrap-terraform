@@ -37,6 +37,8 @@ Resources:
       Tags:
         - Key: sje:purpose
           Value: terraform-backend
+        - Key: sje:phase
+          Value: maintained
 
   TfBackendDynamoDbTable:
     Type: AWS::DynamoDB::Table
@@ -52,6 +54,8 @@ Resources:
       Tags:
         - Key: sje:purpose
           Value: terraform-backend
+        - Key: sje:phase
+          Value: maintained
 
 Outputs:
   TfBackendBucket:
