@@ -35,6 +35,8 @@ Set your AWS profile to the operations account and region. Run these commands:
     ./do.sh tf:backend:deploy
     ./do.sh tf:access:deploy
 
+Once the stacks have been deployed, create AWS access keys for the users in the operations account.
+
 ## Subcommands
 
 - *ops:access* - Manage IAM users for human operators in the operations account
