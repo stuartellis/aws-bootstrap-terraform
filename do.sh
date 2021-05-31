@@ -4,7 +4,7 @@ set -euo pipefail
 
 ## Project variables
 
-export AWS_PREFIX=stuartellis
+export AWS_PREFIX=stuart-ellis
 export AWS_OPS_USER_NAME=stuart.ellis
 export AWS_OPS_USER_EMAIL=stuart@stuartellis.name
 
